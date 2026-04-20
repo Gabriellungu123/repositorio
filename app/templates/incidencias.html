@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Listado de Incidencias{% endblock %}
+{% block content %}
+<section>
+    <h2>Incidencias</h2>
+
+    <div class="page-actions">
+        {% if user.is_admin or user.role in ['reporter', 'group_admin'] %}
+            <a href="/incidencias/crear" class="btn">Nueva incidencia</a>
+        {% endif %}
+
+        {% if user.role != 'reporter' %}
+            <a href="/incidencias" class="btn-secondary {% if scope == 'all' %}active{% endif %}">Todas</a>
+            <a href="/incidencias?scope=mine" class="btn-secondary {% if scope == 'mine' %}active{% endif %}">Asignadas a mí</a>
+            {% if user.grupo_id %}
+                <a href="/incidencias?scope=group" class="btn-secondary {% if scope == 'group' %}active{% endif %}">Mi grupo</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% if group_admin %}
+        <p class="muted">Admin de tu grupo: <strong>{{ group_admin.username }}</strong></p>
+    {% endif %}
+
+    <h3>Abiertas / en proceso</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Grupo</th>
+                <th>Creada por</th>
+                <th>Asignada a</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if incidencias_abiertas %}
+                {% for inc in incidencias_abiertas %}
+                    <tr>
+                        <td>{{ inc.id }}</td>
+                        <td><a href="/incidencias/{{ inc.id }}">{{ inc.titulo }}</a></td>
+                        <td>{{ inc.estado }}</td>
+                        <td>{{ inc.prioridad }}</td>
+                        <td>
+                            {{ inc.grupo_nombre or '-' }}
+                            {% if inc.grupo_admin_username %}
+                                <div class="muted">Admin: {{ inc.grupo_admin_username }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ inc.creador_username or '-' }}</td>
+                        <td>{{ inc.asignado_username or '-' }}</td>
+                        <td>
+                            <a href="/incidencias/{{ inc.id }}">Ver</a>
+                            {% if user.is_admin or user.role == 'group_admin' %}
+                                <a href="/incidencias/{{ inc.id }}/editar">Editar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="8" class="muted">No hay incidencias abiertas.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div style="height:16px"></div>
+
+    <h3>Cerradas / resueltas</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Grupo</th>
+                <th>Creada por</th>
+                <th>Asignada a</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if incidencias_cerradas %}
+                {% for inc in incidencias_cerradas %}
+                    <tr>
+                        <td>{{ inc.id }}</td>
+                        <td><a href="/incidencias/{{ inc.id }}">{{ inc.titulo }}</a></td>
+                        <td>{{ inc.estado }}</td>
+                        <td>{{ inc.prioridad }}</td>
+                        <td>
+                            {{ inc.grupo_nombre or '-' }}
+                            {% if inc.grupo_admin_username %}
+                                <div class="muted">Admin: {{ inc.grupo_admin_username }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ inc.creador_username or '-' }}</td>
+                        <td>{{ inc.asignado_username or '-' }}</td>
+                        <td>
+                            <a href="/incidencias/{{ inc.id }}">Ver</a>
+                            {% if user.is_admin or user.role == 'group_admin' %}
+                                <a href="/incidencias/{{ inc.id }}/editar">Editar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="8" class="muted">No hay incidencias cerradas/resueltas.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

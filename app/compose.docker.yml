@@ -1,0 +1,58 @@
+name: repositorio-docker
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_user_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pma:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - "8082:80"
+
+  sanic_app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: db_user
+      DB_PASSWORD: db_user_pass
+      DB_NAME: app_db
+      SECRET_KEY: "cambia_esto_por_una_clave_segura"
+      SESSION_COOKIE_NAME: "incidencias_session"
+      APP_HOST: "0.0.0.0"
+      APP_PORT: "8000"
+      APP_DEBUG: "1"
+      APP_AUTO_RELOAD: "1"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: ["python", "server.py"]
+    restart: unless-stopped
+
+volumes:
+  dbdata:

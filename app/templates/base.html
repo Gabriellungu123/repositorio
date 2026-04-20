@@ -1,0 +1,57 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Gestión de Incidencias{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    {% block customCSS %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/" style="color:#fff;text-decoration:none;">Gestión de Incidencias</a></h1>
+            <nav>
+                {% if user %}
+                    {% if user.role == 'reporter' %}
+                        <a href="/incidencias/crear">Crear incidencia</a>
+                        <a href="/incidencias">Mis incidencias</a>
+                    {% else %}
+                        <a href="/incidencias">Incidencias</a>
+                        <a href="/incidencias?scope=mine">Asignadas a mí</a>
+                        {% if user.grupo_id %}
+                            <a href="/incidencias?scope=group">Mi grupo</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if user.role == 'group_admin' or user.is_admin %}
+                        <a href="/admin/grupos/asignar">Usuarios / grupos</a>
+                    {% endif %}
+                    {% if user.is_admin %}
+                        <a href="/admin/grupos/crear">Crear grupo</a>
+                    {% endif %}
+
+                    <span class="nav-user">{{ user.username }} ({{ user.role }})</span>
+                    <a href="/logout">Salir</a>
+                {% else %}
+                    <a href="/login">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; {{ 2026 }} Gestión de Incidencias</p>
+        </div>
+    </footer>
+
+    {% block customJS %}{% endblock %}
+</body>
+</html>

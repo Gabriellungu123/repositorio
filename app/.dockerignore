@@ -1,0 +1,16 @@
+# Local DB data (do not include in image build context)
+dbdata
+dbdata/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Virtualenvs (if any end up here)
+.venv/
+venv/
+
+# Misc
+*.sock
+*.log
+.git/

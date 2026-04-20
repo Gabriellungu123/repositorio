@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ editar and 'Editar' or 'Crear' }} Incidencia{% endblock %}
+{% block content %}
+<section>
+    <h2>{{ editar and 'Editar' or 'Crear' }} Incidencia</h2>
+    <form method="post">
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo" value="{{ incidencia.titulo if incidencia else '' }}" required>
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" required>{{ incidencia.descripcion if incidencia else '' }}</textarea>
+        <label for="prioridad">Prioridad:</label>
+        <select id="prioridad" name="prioridad">
+            <option value="baja" {% if incidencia and incidencia.prioridad == 'baja' %}selected{% endif %}>Baja</option>
+            <option value="media" {% if incidencia and incidencia.prioridad == 'media' %}selected{% endif %}>Media</option>
+            <option value="alta" {% if incidencia and incidencia.prioridad == 'alta' %}selected{% endif %}>Alta</option>
+        </select>
+        <label for="grupo_id">Grupo:</label>
+        <select id="grupo_id" name="grupo_id">
+            <option value="">Sin grupo</option>
+            {% for grupo in grupos %}
+                <option value="{{ grupo.id }}" {% if incidencia and incidencia.grupo_id == grupo.id %}selected{% endif %}>{{ grupo.nombre }}</option>
+            {% endfor %}
+        </select>
+        {% if editar %}
+            <label for="estado">Estado:</label>
+            <select id="estado" name="estado">
+                <option value="abierta" {% if incidencia and incidencia.estado == 'abierta' %}selected{% endif %}>Abierta</option>
+                <option value="en_proceso" {% if incidencia and incidencia.estado == 'en_proceso' %}selected{% endif %}>En proceso</option>
+                <option value="resuelta" {% if incidencia and incidencia.estado == 'resuelta' %}selected{% endif %}>Resuelta</option>
+                <option value="cerrada" {% if incidencia and incidencia.estado == 'cerrada' %}selected{% endif %}>Cerrada</option>
+            </select>
+
+            <label for="asignado_id">Asignar a:</label>
+            <select id="asignado_id" name="asignado_id">
+                <option value="">Sin asignar</option>
+                {% for t in tecnicos or [] %}
+                    <option value="{{ t.id }}" {% if incidencia and incidencia.asignado_id == t.id %}selected{% endif %}>{{ t.username }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+
+        <div class="page-actions">
+            <button type="submit">{{ editar and 'Actualizar' or 'Crear' }}</button>
+            <a href="/incidencias" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Detalle de Incidencia{% endblock %}
+{% block content %}
+<section>
+    <h2>Detalle de Incidencia</h2>
+
+    <dl>
+        <dt>ID:</dt><dd>{{ incidencia.id }}</dd>
+        <dt>Título:</dt><dd>{{ incidencia.titulo }}</dd>
+        <dt>Descripción:</dt><dd>{{ incidencia.descripcion }}</dd>
+        <dt>Estado:</dt><dd>{{ incidencia.estado }}</dd>
+        <dt>Prioridad:</dt><dd>{{ incidencia.prioridad }}</dd>
+        <dt>Grupo:</dt><dd>{{ incidencia.grupo_nombre or '-' }}</dd>
+        <dt>Admin de grupo:</dt><dd>{{ incidencia.grupo_admin_username or '-' }}</dd>
+        <dt>Creada por:</dt><dd>{{ incidencia.creador_username or '-' }}</dd>
+        <dt>Asignada a:</dt><dd>{{ incidencia.asignado_username or '-' }}</dd>
+        <dt>Fecha de creación:</dt><dd>{{ incidencia.created_at }}</dd>
+    </dl>
+
+    <div class="page-actions">
+        <a href="/incidencias" class="btn-secondary">Volver</a>
+        {% if user.is_admin or user.role == 'group_admin' %}
+            <a href="/incidencias/{{ incidencia.id }}/editar" class="btn">Editar</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

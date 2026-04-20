@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Crear Grupo{% endblock %}
+{% block content %}
+<section>
+    <h2>Crear Grupo</h2>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        <label for="nombre">Nombre del grupo:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <label for="descripcion">Descripción:</label>
+        <input type="text" id="descripcion" name="descripcion">
+        <button type="submit">Crear</button>
+    </form>
+</section>
+{% endblock %}

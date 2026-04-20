@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local environment / secrets
+.env
+.env.*
+
+# Logs
+*.log
+
+# Local DB data (do not commit)
+app/dbdata/
+dbdata/
+
+# Generated credential / seed output files (do not commit)
+app/cuentas_todas.txt
+app/usuarios_demo.txt
+app/usuarios_personas.txt
